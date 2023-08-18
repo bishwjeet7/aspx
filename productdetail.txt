@@ -1,0 +1,16 @@
+<asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
+    <div class="product-detail-container">
+        <h2>Product Details</h2>
+        <div class="product-details">
+            <asp:Image ID="imgProduct" runat="server" />
+            <h3><asp:Label ID="lblProductName" runat="server" /></h3>
+            <p><asp:Label ID="lblDescription" runat="server" /></p>
+            <p>Price: <asp:Label ID="lblPrice" runat="server" /></p>
+        </div>
+        
+        <div class="button-container">
+            <asp:Button ID="btnAddToCart" runat="server" Text="Add to Cart" OnClick="btnAddToCart_Click" CssClass="btn btn-primary" />
+            <asp:Button ID="btnBuyNow" runat="server" Text="Buy Now" OnClick="btnBuyNow_Click" CssClass="btn btn-success" />
+        </div>
+    </div>
+</asp:Content>

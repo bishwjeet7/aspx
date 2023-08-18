@@ -1,0 +1,110 @@
+<asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
+    <div class="product-container" >
+<asp:ListView ID="lvProduct" runat="server" OnItemDataBound="lvProduct_ItemDataBound" OnItemCommand="lvProduct_ItemCommand">
+        <ItemTemplate>
+            <div class="product-card" >
+                <asp:Image ID="imgProduct" runat="server" />
+                <h3><span style="font-weight:700"><%# Eval("Name") %></span></h3>
+                <p><%# Eval("Description") %></p>
+                <p><del><%# Eval("price") %></del> <span style="font-weight:800"><%# Eval("offer_price") %></span></p>
+<asp:Button ID="btnViewDetails" runat="server" CommandName="ViewDetails" CommandArgument='<%# Eval("Id") %>' Text="View Details" CssClass="btn btn-primary" />
+            </div>
+        </ItemTemplate>
+    </asp:ListView>
+</div>
+
+</asp:Content>
+
+
+
+-------------------------
+Back Code of product page
+
+
+--------------------------
+
+
+using System;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
+using System.Web.UI.WebControls;
+
+namespace shoes
+{
+    public partial class Product : System.Web.UI.Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack)
+            {
+                LoadProducts();
+            }
+        }
+
+        private void LoadProducts()
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["shoesDatabase"].ConnectionString;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string query = "SELECT Id, name, description, price, offer_price, ImageUrl FROM Shoes;";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    connection.Open();
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        lvProduct.DataSource = reader;
+                        lvProduct.DataBind();
+                    }
+
+                    connection.Close();
+                }
+            }
+        }
+
+        protected void lvProduct_ItemDataBound(object sender, ListViewItemEventArgs e)
+        {
+            if (e.Item.ItemType == ListViewItemType.DataItem)
+            {
+                Image imgProduct = e.Item.FindControl("imgProduct") as Image;
+                var dataItem = e.Item.DataItem as System.Data.Common.DbDataRecord;
+
+                if (imgProduct != null && dataItem != null && dataItem["ImageUrl"] != DBNull.Value)
+                {
+                    string imageUrl = dataItem["ImageUrl"].ToString();
+                    imgProduct.ImageUrl = imageUrl;
+                }
+                else
+                {
+                    imgProduct.ImageUrl = "~/Images/default.png";
+                }
+            }
+        }
+        protected void lvProduct_ItemCommand(object sender, ListViewCommandEventArgs e)
+        {
+            if (e.CommandName == "ViewDetails" && e.CommandArgument != null)
+            {
+                try
+                {
+                    int productId = Convert.ToInt32(e.CommandArgument);
+                    string redirectUrl = $"~/ProductDetail.aspx?productId={productId}";
+
+                    string jsScript = $"console.log('Redirecting to: {redirectUrl}');";
+                    ClientScript.RegisterStartupScript(this.GetType(), "LogRedirect", jsScript, true);
+
+                    Response.Redirect(redirectUrl);
+                }
+                catch (Exception ex)
+                {
+                    Response.Write("Error during redirection: " + ex.Message);
+                }
+            }
+        }
+
+
+
+    }
+}
+

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <title>How To make a simple E-Commerce in ASPX.NET</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Tech Guru</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact us</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="content">
+        <h2>How To make a simple E-Commerce in ASPX.NET</h2>
+        <p>Welcome to this tutorial on building a basic e-commerce website using ASP.NET Web Forms (ASPX)! In this
+            tutorial, we'll walk you through the process of creating a straightforward online store where users can
+            explore products, add them to Buy, and proceed through the checkout process. There will be also Admin to
+            add,edit and delete products.</p>
+        Prerequisites
+        <h2>Before we get started, ensure you have the following tools and knowledge:</h2>
+        <ul>
+            <li>Visual Studio (any recent version) </li>
+            <li>Basic understanding of HTML, CSS, and C#</li>
+            <li>.NET Framework knowledge</li>
+        </ul>
+        <h2>Getting Started</h2>
+        <ul>
+            <h4>Project Setup</h4>
+            <ul>
+                <li> Launch Visual Studio and create a new ASP.NET Web Forms project.
+                <li> Choose the appropriate .NET Framework version.
+            </ul>
+        </ul>
+        <ul>
+            <h4>Creating the UI</h4>
+            <ul>
+                <li>Design the user interface using ASPX pages, HTML, and CSS.</li>
+                <li>Develop pages for product listing, product details, cart, and checkout.</li>
+            </ul>
+        </ul>
+        <ul>
+            <h4>Creating a Master Page</h4>
+            <ul>
+                <li>Create a master page that holds the common layout and navigation.</li>
+                <li>This will provide a consistent look and feel across all pages.</li>
+            </ul>
+        </ul>
+
+        <div>
+            <h2>Backend Development</h2>
+            <ul>
+                <h4>Creating a Database</h4>
+                <ul>
+                    <li> Set up a database to store product information, user data, and cart contents.
+                    <li> You can use SQL Server Express or another database of your choice.
+                </ul>
+            </ul>
+            <ul>
+                <h4>Creating Database Tables
+                </h4>
+                <ul>
+                    <li>Define tables for products, users, carts, and orders.</li>
+                    <li>Set up relationships between these tables using primary and foreign keys.</li>
+                </ul>
+            </ul>
+            <ul>
+                <h4>Product Listing Page </h4>
+                <ul>
+                    <li>Create an ASPX page to display a list of products fetched from the database.</li>
+                    <li>Use a GridView or Repeater control to show the products.</li>
+                </ul>
+            </ul>
+            <ul>
+                <h4>Product Details Page </h4>
+                <ul>
+                    <li>Develop an ASPX page that shows detailed information about a selected product.</li>
+                    <li>Include an "Buy" button to allow users to Buy that product.</li>
+                </ul>
+            </ul>
+            <ul>
+                <h4>User Registration and Login</h4>
+                <ul>
+                    <li>Create ASPX pages for user registration and login.</li>
+                    <li>Use ASP.NET Membership or Identity for user authentication.</li>
+                </ul>
+            </ul>
+        </div>
+
+        <div>
+            <h4>Product Page</h4>
+            <p>On product page all the product will be list on this page dynamically. The data will come from database
+                directly.</p>
+            <a href="product.txt" class="btn-primary">Product</a>
+        </div>
+
+        <div>
+            <h4>Product Detail Page</h4>
+            <p>In this section, we'll explore how to create a dynamic product details page using ASP.NET Web Forms. The
+                product details will be loaded from a database based on the provided product ID, allowing users to view
+                detailed information about a specific product.</p>
+            <p style="font-weight: 600;">Below is the code snippet that enables the dynamic display of product details:
+            </p>
+            <a href="productdetail.txt" class="btn-primary">Product Details</a>
+        </div>
+        <div>
+            <h4>Checkout</h4>
+            <p>In this section, we'll embark on an exciting journey through the intricacies of creating a dynamic checkout page that takes users from selecting their desired products to finalizing their orders. We'll delve into the code and logic that power this integral component of your e-commerce platform, step by step. By the end of this exploration, you'll have the tools to craft an interactive checkout experience that enhances user satisfaction and streamlines the order placement process.</p>
+
+            <div class="section">
+                <h6 class="contentbold">Content Block:</h6>
+                <p>We kick things off with the <code>&lt;asp:Content&gt;</code> tag, a cornerstone for defining our checkout page's structure. This tag is tied to a master page for consistency in design.</p>
+            </div>
+            
+            <div class="section">
+                <h6 class="contentbold">Checkout Container:</h6>
+                <p>Encased within the <code>&lt;div class="checkout-container"&gt;</code>, this section encompasses the entirety of the checkout process.</p>
+            </div>
+            
+            <div class="section">
+                <h6 class="contentbold">Checkout Header:</h6>
+                <p>A bold <code>&lt;h2&gt;</code> heading announces the checkout process, making it immediately recognizable to users.</p>
+            </div>
+            
+            <div class="section">
+                <h6 class="contentbold">Message Label:</h6>
+                <p>The <code>&lt;asp:Label&gt;</code> identified as <code>lblMessage</code> stands ready to convey important messages or notifications to users, guiding them throughout the checkout journey.</p>
+            </div>
+            
+            <div class="section">
+                <h6 class="contentbold">Product Details:</h6>
+                <p>Our <code>&lt;div class="product-details"&gt;</code> region is designed to showcase the product image, name, and price—ensuring users are well-informed during the checkout process.</p>
+            </div>
+            
+            <div class="section">
+                <h6 class="contentbold">Checkout Form:</h6>
+                <p>The <code>&lt;div class="checkout-form"&gt;</code> segment represents the pivotal order completion form. Within this area, users can input the desired quantity and then trigger the order placement by clicking the "Place Order" button.</p>
+            </div>
+            
+            <div class="section">
+                <h6 class="contentbold">Total Amount Label:</h6>
+                <p>Adjacent to the quantity input, the <code>&lt;asp:Label&gt;</code> with <code>ID="lblTotalAmount"</code> showcases a crucial detail: the total amount for the prospective order.</p>
+            </div>
+            
+            <div class="section">
+                <h6 class="contentbold">Quantity Input:</h6>
+                <p>Within the <code>&lt;asp:TextBox&gt;</code> with <code>ID="txtQuantity"</code>, users can indicate how many of the selected product they wish to include in their order.</p>
+            </div>
+            
+            <div class="section">
+                <h6 class="contentbold">Place Order Button:</h6>
+                <p>Last but not least, the <code>&lt;asp:Button&gt;</code> labeled "Place Order" (<code>ID="btnPlaceOrder"</code>) serves as the gateway for users to formally confirm and submit their orders.</p>
+            </div>
+            <a href="checkout.txt">Checkout</a>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

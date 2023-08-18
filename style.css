@@ -1,0 +1,9 @@
+.contentbold{
+    font-weight: 600;
+    font-size: large;
+}
+
+.content{
+    width: 80%;
+    margin-left: 10%;
+}

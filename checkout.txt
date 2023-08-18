@@ -1,0 +1,210 @@
+<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Checkout.aspx.cs" Inherits="smartwearable.Checkout" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
+    <div class="checkout-container">
+        <h2>Checkout</h2>
+                <asp:Label ID="lblMessage" runat="server" CssClass="message-label" />
+        <div class="product-details">
+            <asp:Image ID="imgProduct" runat="server" />
+            <h3><asp:Label ID="lblProductName" runat="server" /></h3>
+            <p>Price: <asp:Label ID="lblPrice" runat="server" /></p>
+        </div>
+        
+        <div class="checkout-form">
+            <h4>Complete Your Order</h4>
+            <asp:Label ID="lblTotalAmount" runat="server" Text="Total Amount:" />
+            <asp:TextBox ID="txtQuantity" runat="server" Placeholder="Quantity" CssClass="form-control" />
+            <asp:Button ID="btnPlaceOrder" runat="server" Text="Place Order" OnClick="btnPlaceOrder_Click" CssClass="btn btn-success" />
+        </div>
+    </div>
+</asp:Content>
+
+
+
+
+
+
+
+
+
+
+--------------------------
+
+
+
+using System;
+using System.Configuration;
+using System.Data.SqlClient;
+
+namespace shoes
+{
+    public partial class Checkout : System.Web.UI.Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack)
+            {
+                if (!string.IsNullOrEmpty(Request.QueryString["productId"]))
+                {
+                    int productId = Convert.ToInt32(Request.QueryString["productId"]);
+                    LoadProductDetails(productId);
+                }
+                else
+                {
+                    Response.Redirect("Products.aspx");
+                }
+            }
+        }
+
+        private void LoadProductDetails(int productId)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["shoesDatabase"].ConnectionString;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string query = "SELECT Id, name, price, ImageUrl FROM Wearables WHERE Id = @productId;";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@productId", productId);
+
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            imgProduct.ImageUrl = reader["ImageUrl"].ToString();
+                            lblProductName.Text = reader["name"].ToString();
+                            lblPrice.Text = reader["price"].ToString();
+                            CalculateTotalAmount();
+                        }
+                        else
+                        {
+                            Response.Redirect("Products.aspx");
+                        }
+                    }
+                }
+            }
+        }
+
+        private decimal CalculateTotalAmount()
+        {
+            decimal price = Convert.ToDecimal(lblPrice.Text);
+            int quantity = string.IsNullOrEmpty(txtQuantity.Text) ? 1 : Convert.ToInt32(txtQuantity.Text);
+            decimal totalAmount = price * quantity;
+            return totalAmount;
+        }
+
+
+        protected void btnPlaceOrder_Click(object sender, EventArgs e)
+        {
+            if (Session["Username"] == null)
+            {
+                Response.Redirect("Login.aspx");
+            }
+            else
+            {
+                int userId = GetUserId(Session["Username"].ToString());
+                decimal totalAmount = CalculateTotalAmount();
+
+                int orderId = SaveOrder(userId, totalAmount);
+
+                if (orderId > 0)
+                {
+                    int productId = Convert.ToInt32(Request.QueryString["productId"]);
+                    int quantity = string.IsNullOrEmpty(txtQuantity.Text) ? 1 : Convert.ToInt32(txtQuantity.Text);
+                    decimal unitPrice = Convert.ToDecimal(lblPrice.Text);
+                    SaveOrderItem(orderId, productId, quantity, unitPrice);
+
+                    Response.Redirect("OrderConfirmation.aspx?orderId=" + orderId);
+                }
+                else
+                {
+                    lblMessage.Text = "Failed to place the order.";
+                }
+            }
+        }
+
+        private int GetUserId(string username)
+        {
+            int userId = -1;
+            string connectionString = ConfigurationManager.ConnectionStrings["DataBaseConnectionString"].ConnectionString;
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string query = "SELECT user_id FROM Users WHERE username = @username;";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@username", username);
+
+                    connection.Open();
+                    object result = command.ExecuteScalar();
+
+                    if (result != null && result != DBNull.Value)
+                    {
+                        userId = Convert.ToInt32(result);
+                    }
+                }
+            }
+
+            return userId;
+        }
+
+        private int SaveOrder(int userId, decimal totalAmount)
+        {
+            int orderId = -1;
+            string connectionString = ConfigurationManager.ConnectionStrings["DataBaseConnectionString"].ConnectionString;
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string orderInsertQuery = "INSERT INTO Orders (user_id, order_date, total_amount) " +
+                                          "VALUES (@userId, @orderDate, @totalAmount); SELECT SCOPE_IDENTITY();";
+
+                using (SqlCommand command = new SqlCommand(orderInsertQuery, connection))
+                {
+                    command.Parameters.AddWithValue("@userId", userId);
+                    command.Parameters.AddWithValue("@orderDate", DateTime.Now);
+                    command.Parameters.AddWithValue("@totalAmount", totalAmount);
+
+                    connection.Open();
+                    object result = command.ExecuteScalar();
+
+                    if (result != null && result != DBNull.Value)
+                    {
+                        orderId = Convert.ToInt32(result);
+                    }
+                }
+            }
+
+            return orderId;
+        }
+
+        private void SaveOrderItem(int orderId, int productId, int quantity, decimal unitPrice)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["DataBaseConnectionString"].ConnectionString;
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string orderItemInsertQuery = "INSERT INTO OrderItems (order_id, product_id, quantity, unit_price) " +
+                                              "VALUES (@orderId, @productId, @quantity, @unitPrice);";
+
+                using (SqlCommand command = new SqlCommand(orderItemInsertQuery, connection))
+                {
+                    command.Parameters.AddWithValue("@orderId", orderId);
+                    command.Parameters.AddWithValue("@productId", productId);
+                    command.Parameters.AddWithValue("@quantity", quantity);
+                    command.Parameters.AddWithValue("@unitPrice", unitPrice);
+
+                    connection.Open();
+                    int rowsAffected = command.ExecuteNonQuery();
+
+                    if (rowsAffected > 0)
+                    {
+                        lblMessage.Text = "Order item saved successfully.";
+                    }
+                    else
+                    {
+                        lblMessage.Text = "Failed to save order item.";
+                    }
+                }
+            }
+        }
+    }
+}
